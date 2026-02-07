@@ -164,7 +164,9 @@ def main():
         download_audio(audio_url, audio_path)
         
         # Step 3: Transcribe
-        output_path = Path.cwd() / f"{safe_title}.txt"
+        output_dir = Path.cwd() / "output"
+        output_dir.mkdir(exist_ok=True)
+        output_path = output_dir / f"{safe_title}.txt"
         transcript = transcribe_audio(audio_path, output_path)
     
     print(f"\n✅ Done! Transcript saved to: {output_path}")
