@@ -11,6 +11,7 @@ Requirements (install with uv):
 The transcript will be saved as a .txt file in the current directory.
 """
 
+import html
 import re
 import sys
 import tempfile
@@ -54,22 +55,20 @@ def extract_audio_url(html: str) -> str | None:
     return None
 
 
-def extract_title(html: str) -> str | None:
+def extract_title(page_html: str) -> str | None:
     """Extract episode title from meta tags."""
     patterns = [
         r'<meta\s+name="og:title"\s+content="([^"]+)"',
         r'<meta\s+property="og:title"\s+content="([^"]+)"',
         r"<title>([^<]+)</title>",
     ]
-    
+
     for pattern in patterns:
-        match = re.search(pattern, html)
+        match = re.search(pattern, page_html)
         if match:
             title = match.group(1)
             # Clean up HTML entities
-            title = title.replace("&mdash;", "—")
-            title = title.replace("&amp;", "&")
-            title = title.replace("&#39;", "'")
+            title = html.unescape(title)
             # Remove " — Overcast" suffix if present
             title = re.sub(r"\s*—\s*Overcast$", "", title)
             return title
